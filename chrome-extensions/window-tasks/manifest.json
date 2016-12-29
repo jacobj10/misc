@@ -5,5 +5,12 @@
   
   "background": {
     "scripts": ["background.js"]
-  }
+  },
+ 
+ "web_accessible_resources": [
+   "html/start.html"
+  ],
+  "permissions": [
+    "storage"
+  ]
 }
