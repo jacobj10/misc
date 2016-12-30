@@ -1,15 +1,16 @@
 function processForm(e) {
     if (e.preventDefault) e.preventDefault();
-        chrome.storage.sync.set({'value': document.getElementById("element_1").value}, function() {
-        console.log("asdf");
+        obj = {};
+        obj[id] = document.getElementById("element_1").value;
+        chrome.storage.sync.set(obj, function() {
         });
-    //window.close();
-    /* do what you want with the form */
-
-    // You must return false to prevent the default form behavior
+    window.close();
     return false;
 }
-
+var id = undefined;
+chrome.windows.getCurrent(function(currentWindow) {
+                    id = currentWindow.id;
+                });
 var form = document.getElementById('input_form');
 if (form.attachEvent) {
     form.attachEvent("submit", processForm);

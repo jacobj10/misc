@@ -2,14 +2,9 @@ chrome.windows.onCreated.addListener(function() {
 chrome.tabs.create({url:"html/form/form.html"});
 })
 
-chrome.storage.onChanged.addListener(function(changes, namespace) {
-for (key in changes) {
-  var storageChange = changes[key];
-  console.log('Storage key "%s" in namespace "%s" changed. ' +
-			  'Old value was "%s", new value is "%s".',
-			  key,
-			  namespace,
-			  storageChange.oldValue,
-			  storageChange.newValue);
-}
+chrome.windows.onRemoved.addListener(function(windowId){
+    console.log(windowId);
+    chrome.storage.sync.get(String(windowId), function (obj) {
+        alert("Did you remember to " + obj[String(windowId)] + "?");
+    });
 });
