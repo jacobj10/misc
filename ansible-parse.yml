@@ -1,0 +1,31 @@
+---
+- name: parse hosts
+  hosts: localhost
+  gather_facts: false
+  vars:
+    start_writing: false
+    to_find: "SENTINEL"
+    dest_file: "/home/jjacob/Desktop/foo"
+    to_parse: "/home/jjacob/Desktop/bar"
+  tasks:
+    - name: clear file
+      shell: echo '' > {{ dest_file }}
+    - name: iter file
+      with_lines: /bin/cat "{{ to_parse }}"
+      when: "to_find in item or start_writing"
+      register: start_writing
+      lineinfile:
+        dest: "{{ dest_file }}"
+        line: "{{ item }}"
+        state: present
+        regexp: '^((?![0-9]{1,3}\.).)*$'
+    - name: split
+      replace:
+        dest: "{{ dest_file }}"
+        regexp: '[I][N]*\s*[A]\s*'
+        replace: 'ansible_host='
+    - name: prepend
+      lineinfile:
+        dest: "{{ dest_file }}"
+        insertbefore: BOF
+        line: '[lolcopter]'
