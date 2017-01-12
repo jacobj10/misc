@@ -7,6 +7,7 @@ class RequestMachine(object):
     def __init__(self, *args, **kwargs):
         args = self.parse_args()
         self.url = args.url
+        self.extension = self.url.split('.')[-1]
         self.logged = []
         self.logger = sleek_logger.SleekLogger('SiteTrav.log')
 
@@ -29,19 +30,13 @@ class RequestMachine(object):
         else:
             matches = re.findall('href=[\'"]?([^\'" >]+)', resp)
             for match in matches:
-                if '.com' in match or '.edu' in match or '.org' in match:
-                    self.logger.log("{0} is a full url, not traversing".format(match), 'debug')
-                    matches.remove(match)
-                elif match=='/' or match=='\\':
+                new_url = self.url + match
+                if new_url in self.logged or (not match.startswith('/') and not match.startswith('#')):
                     continue
                 else:
-                    new_url = self.url + match
-                    if new_url in self.logged:
-                        continue
-                    else:
-                        self.logged.append(new_url)
-                        self.logger.log('Traversing: ' + new_url)
-                        self.scrape_urls(new_url)
+                    self.logged.append(new_url)
+                    self.logger.log('Traversing: ' + new_url)
+                    self.scrape_urls(new_url)
 if __name__ == '__main__':
     x = RequestMachine()
     x.test_connection()
