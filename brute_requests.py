@@ -6,7 +6,7 @@ import hashlib
 import threading
 import queue 
 
-MAX_NUM_THREADS = 3
+MAX_NUM_THREADS = 5
 
 class RequestMachine(object):
     def __init__(self, *args, **kwargs):
@@ -19,11 +19,13 @@ class RequestMachine(object):
         self.init_threads()
         self.hasher = hashlib.md5
         self.logger = sleek_logger.SleekLogger('SiteTrav.log')
+        self.jobs = []
         self.scrape_urls(self.url)
 
     def worker(self):
         while True:
             current = self.queue.get()
+            self.jobs.append(current)
             if current is None:
                 break
             try:
@@ -41,7 +43,14 @@ class RequestMachine(object):
                         self.logged[_hash] = new_url
                         self.logger.log('Traversing: ' + new_url)
                         self.scrape_urls(new_url)
-                    
+            self.jobs.remove(current)
+            if len(self.jobs) == 0:
+                self.add_poison()
+
+    def add_poison(self):
+        for t in self.threads:
+            self.queue.put(None)
+
     def init_threads(self):
         for i in range(MAX_NUM_THREADS):
             t = threading.Thread(target=self.worker)
