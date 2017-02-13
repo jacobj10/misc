@@ -59,7 +59,7 @@ class RequestMachine(object):
 
     def parse_args(self):
         parser = argparse.ArgumentParser(description='Args for brute forcing requests.')
-        parser.add_argument('url', help='an integer for the accumulator')
+        parser.add_argument('url', help='target url')
         args = parser.parse_args()
         return args
 
