@@ -1,0 +1,3 @@
+https://raw.githubusercontent.com/jacobj10/misc/master/chrome-extensions/redirect-prank/redirect.js
+https://raw.githubusercontent.com/jacobj10/misc/master/chrome-extensions/redirect-prank/manifest.json
+
